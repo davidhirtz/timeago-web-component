@@ -205,7 +205,8 @@
     }
     return rtf.format(value, unit);
   };
-  customElements.get("x-timeago") || customElements.define("x-timeago", class extends HTMLElement {
+  var tag = "x-timeago";
+  customElements.get(tag) || customElements.define(tag, class extends HTMLElement {
     t;
     d;
     // noinspection JSUnusedGlobalSymbols

@@ -64,7 +64,9 @@ const intlFormatDistance = (laterDate, earlierDate): string => {
     return rtf.format(value, unit);
 }
 
-customElements.get('x-timeago') || customElements.define('x-timeago', class extends HTMLElement {
+const tag = 'x-timeago';
+
+customElements.get(tag) || customElements.define(tag, class extends HTMLElement {
     t: number | null;
     d: Date;
 
