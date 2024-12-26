@@ -1,4 +1,4 @@
-import {normalizeDates} from "date-fns/_lib/normalizeDates";
+import {normalizeDates} from "../node_modules/date-fns/_lib/normalizeDates";
 import {
     secondsInDay,
     secondsInHour,
@@ -16,6 +16,7 @@ import {differenceInHours} from "date-fns/differenceInHours";
 import {differenceInMinutes} from "date-fns/differenceInMinutes";
 import {differenceInSeconds} from "date-fns/differenceInSeconds";
 
+// @ts-ignore
 const rtf = new Intl.RelativeTimeFormat(document.documentElement.lang || new Intl.DateTimeFormat().resolvedOptions().locale, {
     numeric: "auto",
 });

@@ -25,27 +25,18 @@
     return new Date(value);
   }
 
+  // node_modules/date-fns/_lib/normalizeDates.js
+  function normalizeDates(context, ...dates) {
+    const normalize = constructFrom.bind(
+      null,
+      context || dates.find((date) => typeof date === "object")
+    );
+    return dates.map(normalize);
+  }
+
   // node_modules/date-fns/toDate.js
   function toDate(argument, context) {
     return constructFrom(context || argument, argument);
-  }
-
-  // node_modules/date-fns/_lib/defaultOptions.js
-  var defaultOptions = {};
-  function getDefaultOptions() {
-    return defaultOptions;
-  }
-
-  // node_modules/date-fns/startOfWeek.js
-  function startOfWeek(date, options) {
-    const defaultOptions2 = getDefaultOptions();
-    const weekStartsOn = options?.weekStartsOn ?? options?.locale?.options?.weekStartsOn ?? defaultOptions2.weekStartsOn ?? defaultOptions2.locale?.options?.weekStartsOn ?? 0;
-    const _date = toDate(date, options?.in);
-    const day = _date.getDay();
-    const diff = (day < weekStartsOn ? 7 : 0) + day - weekStartsOn;
-    _date.setDate(_date.getDate() - diff);
-    _date.setHours(0, 0, 0, 0);
-    return _date;
   }
 
   // node_modules/date-fns/_lib/getTimezoneOffsetInMilliseconds.js
@@ -64,15 +55,6 @@
     );
     utcDate.setUTCFullYear(_date.getFullYear());
     return +date - +utcDate;
-  }
-
-  // node_modules/date-fns/_lib/normalizeDates.js
-  function normalizeDates(context, ...dates) {
-    const normalize = constructFrom.bind(
-      null,
-      context || dates.find((date) => typeof date === "object")
-    );
-    return dates.map(normalize);
   }
 
   // node_modules/date-fns/startOfDay.js
@@ -108,23 +90,22 @@
     return yearsDiff * 12 + monthsDiff;
   }
 
-  // node_modules/date-fns/getQuarter.js
-  function getQuarter(date, options) {
-    const _date = toDate(date, options?.in);
-    const quarter = Math.trunc(_date.getMonth() / 3) + 1;
-    return quarter;
+  // node_modules/date-fns/_lib/defaultOptions.js
+  var defaultOptions = {};
+  function getDefaultOptions() {
+    return defaultOptions;
   }
 
-  // node_modules/date-fns/differenceInCalendarQuarters.js
-  function differenceInCalendarQuarters(laterDate, earlierDate, options) {
-    const [laterDate_, earlierDate_] = normalizeDates(
-      options?.in,
-      laterDate,
-      earlierDate
-    );
-    const yearsDiff = laterDate_.getFullYear() - earlierDate_.getFullYear();
-    const quartersDiff = getQuarter(laterDate_) - getQuarter(earlierDate_);
-    return yearsDiff * 4 + quartersDiff;
+  // node_modules/date-fns/startOfWeek.js
+  function startOfWeek(date, options) {
+    const defaultOptions2 = getDefaultOptions();
+    const weekStartsOn = options?.weekStartsOn ?? options?.locale?.options?.weekStartsOn ?? defaultOptions2.weekStartsOn ?? defaultOptions2.locale?.options?.weekStartsOn ?? 0;
+    const _date = toDate(date, options?.in);
+    const day = _date.getDay();
+    const diff = (day < weekStartsOn ? 7 : 0) + day - weekStartsOn;
+    _date.setDate(_date.getDate() - diff);
+    _date.setHours(0, 0, 0, 0);
+    return _date;
   }
 
   // node_modules/date-fns/differenceInCalendarWeeks.js
@@ -188,87 +169,56 @@
     return getRoundingMethod(options?.roundingMethod)(diff);
   }
 
-  // node_modules/date-fns/intlFormatDistance.js
-  function intlFormatDistance(laterDate, earlierDate, options) {
+  // src/index.ts
+  var rtf = new Intl.RelativeTimeFormat(document.documentElement.lang || new Intl.DateTimeFormat().resolvedOptions().locale, {
+    numeric: "auto"
+  });
+  var intlFormatDistance = (laterDate, earlierDate) => {
     let value = 0;
     let unit;
     const [laterDate_, earlierDate_] = normalizeDates(
-      options?.in,
+      null,
       laterDate,
       earlierDate
     );
-    if (!options?.unit) {
-      const diffInSeconds = differenceInSeconds(laterDate_, earlierDate_);
-      if (Math.abs(diffInSeconds) < secondsInMinute) {
-        value = differenceInSeconds(laterDate_, earlierDate_);
-        unit = "second";
-      } else if (Math.abs(diffInSeconds) < secondsInHour) {
-        value = differenceInMinutes(laterDate_, earlierDate_);
-        unit = "minute";
-      } else if (Math.abs(diffInSeconds) < secondsInDay && Math.abs(differenceInCalendarDays(laterDate_, earlierDate_)) < 1) {
-        value = differenceInHours(laterDate_, earlierDate_);
-        unit = "hour";
-      } else if (Math.abs(diffInSeconds) < secondsInWeek && (value = differenceInCalendarDays(laterDate_, earlierDate_)) && Math.abs(value) < 7) {
-        unit = "day";
-      } else if (Math.abs(diffInSeconds) < secondsInMonth) {
-        value = differenceInCalendarWeeks(laterDate_, earlierDate_);
-        unit = "week";
-      } else if (Math.abs(diffInSeconds) < secondsInQuarter) {
-        value = differenceInCalendarMonths(laterDate_, earlierDate_);
-        unit = "month";
-      } else if (Math.abs(diffInSeconds) < secondsInYear) {
-        if (differenceInCalendarQuarters(laterDate_, earlierDate_) < 4) {
-          value = differenceInCalendarQuarters(laterDate_, earlierDate_);
-          unit = "quarter";
-        } else {
-          value = differenceInCalendarYears(laterDate_, earlierDate_);
-          unit = "year";
-        }
-      } else {
-        value = differenceInCalendarYears(laterDate_, earlierDate_);
-        unit = "year";
-      }
+    const diffInSeconds = differenceInSeconds(laterDate_, earlierDate_);
+    if (Math.abs(diffInSeconds) < secondsInMinute) {
+      value = differenceInSeconds(laterDate_, earlierDate_);
+      unit = "second";
+    } else if (Math.abs(diffInSeconds) < secondsInHour) {
+      value = differenceInMinutes(laterDate_, earlierDate_);
+      unit = "minute";
+    } else if (Math.abs(diffInSeconds) < secondsInDay && Math.abs(differenceInCalendarDays(laterDate_, earlierDate_)) < 1) {
+      value = differenceInHours(laterDate_, earlierDate_);
+      unit = "hour";
+    } else if (Math.abs(diffInSeconds) < secondsInWeek && (value = differenceInCalendarDays(laterDate_, earlierDate_)) && Math.abs(value) < 7) {
+      unit = "day";
+    } else if (Math.abs(diffInSeconds) < secondsInMonth) {
+      value = differenceInCalendarWeeks(laterDate_, earlierDate_);
+      unit = "week";
+    } else if (Math.abs(diffInSeconds) < secondsInYear) {
+      value = differenceInCalendarMonths(laterDate_, earlierDate_);
+      unit = "month";
     } else {
-      unit = options?.unit;
-      if (unit === "second") {
-        value = differenceInSeconds(laterDate_, earlierDate_);
-      } else if (unit === "minute") {
-        value = differenceInMinutes(laterDate_, earlierDate_);
-      } else if (unit === "hour") {
-        value = differenceInHours(laterDate_, earlierDate_);
-      } else if (unit === "day") {
-        value = differenceInCalendarDays(laterDate_, earlierDate_);
-      } else if (unit === "week") {
-        value = differenceInCalendarWeeks(laterDate_, earlierDate_);
-      } else if (unit === "month") {
-        value = differenceInCalendarMonths(laterDate_, earlierDate_);
-      } else if (unit === "quarter") {
-        value = differenceInCalendarQuarters(laterDate_, earlierDate_);
-      } else if (unit === "year") {
-        value = differenceInCalendarYears(laterDate_, earlierDate_);
-      }
+      value = differenceInCalendarYears(laterDate_, earlierDate_);
+      unit = "year";
     }
-    const rtf = new Intl.RelativeTimeFormat(options?.locale, {
-      numeric: "auto",
-      ...options
-    });
     return rtf.format(value, unit);
-  }
-
-  // src/index.ts
+  };
   window.customElements.define("x-timeago", class extends HTMLElement {
+    t;
+    d;
     // noinspection JSUnusedGlobalSymbols
     connectedCallback() {
       const _ = this;
       try {
         _.d = new Date(_.dataset.date || _.textContent);
-        _.l = _.dataset.locale || document.documentElement.lang || new Intl.DateTimeFormat().resolvedOptions().locale;
       } catch (e) {
         console.error(e);
         return;
       }
       if (!_.title) {
-        _.title = _.d.toLocaleString(_.l);
+        _.title = _.d.toLocaleString(rtf.locale);
       }
       _.set();
     }
@@ -280,9 +230,7 @@
       const _ = this;
       const now = /* @__PURE__ */ new Date();
       const diff = Math.abs(now.getTime() - _.d.getTime());
-      _.textContent = intlFormatDistance(_.d, now, {
-        locale: _.l
-      });
+      _.textContent = intlFormatDistance(_.d, now);
       _.t = setTimeout(() => _.set(), diff < 6e4 ? 1e3 : 6e4);
     }
   });
