@@ -1,11 +1,11 @@
 {
   "name": "x-timeago",
   "version": "1.0.0",
-  "description": "Simple web component that displays relative timestamps (e.g. \"4 minutes ago\") for dates.",
+  "description": "Simple web component that displays dates as relative timestamps (e.g. \"4 minutes ago\").",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/timeago.js",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --outfile=dist/index.js && esbuild dist/index.js --minify --outfile=dist/index.min.js"
+    "build": "esbuild src/index.ts --bundle --outfile=dist/timeago.js && esbuild dist/timeago.js --minify --outfile=dist/timeago.min.js"
   },
   "repository": {
     "type": "git",

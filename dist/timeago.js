@@ -211,10 +211,8 @@
     // noinspection JSUnusedGlobalSymbols
     connectedCallback() {
       const _ = this;
-      try {
-        _.d = new Date(_.dataset.date || _.textContent);
-      } catch (e) {
-        console.error(e);
+      _.d = new Date(_.dataset.date || _.textContent);
+      if (_.d.toString() === "Invalid Date") {
         return;
       }
       if (!_.title) {
