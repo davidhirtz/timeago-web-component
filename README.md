@@ -31,3 +31,5 @@ or
 <x-timeago date="2025-01-01T00:00:00Z"></x-timeago>
 <x-timeago>2025-01-01T00:00:00Z</x-timeago>
 ```
+
+[View online demo](https://davidhirtz.github.io/timeago-web-component/)
