@@ -1,3 +1,4 @@
+"use strict";
 (() => {
   // node_modules/date-fns/constants.js
   var daysInYear = 365.2425;
@@ -177,7 +178,7 @@
     let value = 0;
     let unit;
     const [laterDate_, earlierDate_] = normalizeDates(
-      null,
+      void 0,
       laterDate,
       earlierDate
     );
@@ -207,30 +208,40 @@
   };
   var tag = "x-timeago";
   customElements.get(tag) || customElements.define(tag, class extends HTMLElement {
-    t;
-    d;
+    #timeout;
+    #date;
+    static get observedAttributes() {
+      return ["date"];
+    }
     // noinspection JSUnusedGlobalSymbols
     connectedCallback() {
-      const _ = this;
-      _.d = new Date(_.dataset.date || _.textContent);
-      if (_.d.toString() === "Invalid Date") {
-        return;
-      }
-      if (!_.title) {
-        _.title = _.d.toLocaleString(rtf.locale);
-      }
-      _.set();
+      this.#setDate();
     }
     // noinspection JSUnusedGlobalSymbols
     disconnectedCallback() {
-      clearTimeout(this.t);
+      clearTimeout(this.#timeout);
     }
-    set() {
+    // noinspection JSUnusedGlobalSymbols
+    attributeChangedCallback() {
+      this.#setDate();
+    }
+    #setDate() {
+      const _ = this;
+      _.#date = new Date(_.getAttribute("date") || _.textContent || Date.now());
+      if (_.#date.toString() === "Invalid Date") {
+        return;
+      }
+      if (!_.title) {
+        _.title = _.#date.toLocaleString(rtf.resolvedOptions().locale);
+      }
+      this.#updateTime();
+    }
+    #updateTime() {
       const _ = this;
       const now = /* @__PURE__ */ new Date();
-      const diff = Math.abs(now.getTime() - _.d.getTime());
-      _.textContent = intlFormatDistance(_.d, now);
-      _.t = setTimeout(() => _.set(), diff < 6e4 ? 1e3 : 6e4);
+      const diff = Math.abs(now.getTime() - _.#date.getTime());
+      _.textContent = intlFormatDistance(_.#date, now);
+      _.#timeout = setTimeout(() => _.#updateTime(), diff < 6e4 ? 1e3 : 6e4);
     }
   });
 })();

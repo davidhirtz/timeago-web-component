@@ -6,27 +6,27 @@ import {
     secondsInMonth,
     secondsInWeek,
     secondsInYear,
-} from "date-fns/constants";
+} from "../node_modules/date-fns/constants";
 
-import {differenceInCalendarDays} from "date-fns/differenceInCalendarDays";
-import {differenceInCalendarMonths} from "date-fns/differenceInCalendarMonths";
-import {differenceInCalendarWeeks} from "date-fns/differenceInCalendarWeeks";
-import {differenceInCalendarYears} from "date-fns/differenceInCalendarYears";
-import {differenceInHours} from "date-fns/differenceInHours";
-import {differenceInMinutes} from "date-fns/differenceInMinutes";
-import {differenceInSeconds} from "date-fns/differenceInSeconds";
+import {differenceInCalendarDays} from "../node_modules/date-fns/differenceInCalendarDays";
+import {differenceInCalendarMonths} from "../node_modules/date-fns/differenceInCalendarMonths";
+import {differenceInCalendarWeeks} from "../node_modules/date-fns/differenceInCalendarWeeks";
+import {differenceInCalendarYears} from "../node_modules/date-fns/differenceInCalendarYears";
+import {differenceInHours} from "../node_modules/date-fns/differenceInHours";
+import {differenceInMinutes} from "../node_modules/date-fns/differenceInMinutes";
+import {differenceInSeconds} from "../node_modules/date-fns/differenceInSeconds";
+import {DateArg} from "../node_modules/date-fns/types";
 
-// @ts-ignore
 const rtf = new Intl.RelativeTimeFormat(document.documentElement.lang || new Intl.DateTimeFormat().resolvedOptions().locale, {
     numeric: "auto",
 });
 
-const intlFormatDistance = (laterDate, earlierDate): string => {
+const intlFormatDistance = (laterDate: DateArg<Date>, earlierDate: DateArg<Date>): string => {
     let value = 0;
     let unit: string;
 
     const [laterDate_, earlierDate_] = normalizeDates(
-        null,
+        undefined,
         laterDate,
         earlierDate,
     );
@@ -61,44 +61,56 @@ const intlFormatDistance = (laterDate, earlierDate): string => {
         unit = "year";
     }
 
-    return rtf.format(value, unit);
+    return rtf.format(value, unit as Intl.RelativeTimeFormatUnit);
 }
 
 const tag = 'x-timeago';
 
 customElements.get(tag) || customElements.define(tag, class extends HTMLElement {
-    t: number | null;
-    d: Date;
+    #timeout: number;
+    #date: Date;
+
+    static get observedAttributes() {
+        return ['date'];
+    }
 
     // noinspection JSUnusedGlobalSymbols
     connectedCallback() {
-        const _ = this;
-
-        _.d = new Date(_.dataset.date || _.textContent);
-
-        if (_.d.toString() === 'Invalid Date') {
-            return;
-        }
-
-        if (!_.title) {
-            _.title = _.d.toLocaleString(rtf.locale);
-        }
-
-        _.set();
+        this.#setDate();
     }
 
     // noinspection JSUnusedGlobalSymbols
     disconnectedCallback() {
-        clearTimeout(this.t);
+        clearTimeout(this.#timeout!);
     }
 
-    set() {
+    // noinspection JSUnusedGlobalSymbols
+    attributeChangedCallback() {
+        this.#setDate()
+    }
+
+    #setDate() {
+        const _ = this;
+        _.#date = new Date(_.getAttribute('date') || _.textContent || Date.now());
+
+        if (_.#date.toString() === 'Invalid Date') {
+            return;
+        }
+
+        if (!_.title) {
+            _.title = _.#date.toLocaleString(rtf.resolvedOptions().locale);
+        }
+
+        this.#updateTime();
+    }
+
+    #updateTime() {
         const _ = this;
         const now = new Date();
-        const diff = Math.abs(now.getTime() - _.d.getTime());
+        const diff = Math.abs(now.getTime() - _.#date.getTime());
 
-        _.textContent = intlFormatDistance(_.d, now);
+        _.textContent = intlFormatDistance(_.#date, now);
 
-        _.t = setTimeout(() => _.set(), diff < 60000 ? 1000 : 60000);
+        _.#timeout = setTimeout(() => _.#updateTime(), diff < 60000 ? 1000 : 60000);
     }
 });
