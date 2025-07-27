@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Component Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
+    <script type="module" src="../dist/timeago.min.js"></script>
+    <style>
+        body {
+            font-family: "Segoe UI", "Noto Sans", Helvetica, sans-serif;
+            max-width: 40rem;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1, h2 {
+            margin: 0 0 1rem;
+            font-weight: 600;
+            line-height: 1.25;
+            font-size: 2em;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            margin: 2rem 0 1rem;
+        }
+
+        x-timeago {
+            display: block;
+            padding: 1rem;
+            background-color: #f6f8fa;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h1>Timeago Web Component Demo</h1>
+    <p>Tiny web component that displays dates as relative timestamps (e.g. "4 minutes ago"). Automatically synchronizes the elapsed time, supports the browser's language and sets the `title` attribute to the localized full date.</p>
+</div>
+<script>
+    const now = new Date();
+    const examples = [
+        ['Now', new Date(now.getTime())],
+        ['Five minutes ago', new Date(now.getTime() - 1000 * 60 * 5)],
+        ['One hour ago', new Date(now.getTime() - 1000 * 60 * 60)],
+        ['One day ago', new Date(now.getTime() - 1000 * 60 * 60 * 24)],
+        ['Two days ago', new Date(now.getTime() - 1000 * 60 * 60 * 24 * 2)],
+        ['In five minutes', new Date(now.getTime() + 1000 * 60 * 5)],
+        ['In one hour', new Date(now.getTime() + 1000 * 60 * 60)],
+        ['In one day', new Date(now.getTime() + 1000 * 60 * 60 * 24)],
+        ['In two days', new Date(now.getTime() + 1000 * 60 * 60 * 24 * 2)],
+    ];
+
+    examples.forEach(([label, date]) => {
+        const headline = document.createElement('h2');
+        headline.textContent = label;
+        document.body.appendChild(headline);
+
+        const element = document.createElement('x-timeago');
+        element.textContent = date.toISOString();
+        document.body.appendChild(element);
+    });
+</script>
+<a class="github-fork-ribbon" href="https://github.com/davidhirtz/timeago-web-component" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+</body>
+</html>
