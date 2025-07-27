@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/timeago.js",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --outfile=dist/timeago.js && esbuild dist/timeago.js --minify --outfile=dist/timeago.min.js"
+    "build": "esbuild src/index.ts --bundle --outfile=dist/timeago.js && esbuild dist/timeago.js --minify --outfile=dist/timeago.min.js && cp dist/timeago.min.js docs/timeago.min.js"
   },
   "repository": {
     "type": "git",
