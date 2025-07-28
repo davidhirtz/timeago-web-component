@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Web Component Demo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
+    <title>Timeago Web Component Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tiny JavaScript web component that displays dates as relative dates and timestamps.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css">
     <script type="module" src="timeago.min.js"></script>
     <style>
         body {
@@ -39,17 +41,18 @@
     <p><a href="https://github.com/davidhirtz/timeago-web-component">No dependencies, 2.7kb.</a></p>
 </div>
 <script>
-    const now = new Date();
+    const time = new Date().getTime();
+
     const examples = [
-        ['Now', new Date(now.getTime())],
-        ['Five minutes ago', new Date(now.getTime() - 1000 * 60 * 5)],
-        ['One hour ago', new Date(now.getTime() - 1000 * 60 * 60)],
-        ['One day ago', new Date(now.getTime() - 1000 * 60 * 60 * 24)],
-        ['Two days ago', new Date(now.getTime() - 1000 * 60 * 60 * 24 * 2)],
-        ['In five minutes', new Date(now.getTime() + 1000 * 60 * 5)],
-        ['In one hour', new Date(now.getTime() + 1000 * 60 * 60)],
-        ['In one day', new Date(now.getTime() + 1000 * 60 * 60 * 24)],
-        ['In two days', new Date(now.getTime() + 1000 * 60 * 60 * 24 * 2)],
+        ['Now', new Date()],
+        ['Five minutes ago', new Date(time - 1000 * 60 * 5)],
+        ['One hour ago', new Date(time - 1000 * 60 * 60)],
+        ['One day ago', new Date(time - 1000 * 60 * 60 * 24)],
+        ['Two days ago', new Date(time - 1000 * 60 * 60 * 24 * 2)],
+        ['In five minutes', new Date(time + 1000 * 60 * 5)],
+        ['In one hour', new Date(time + 1000 * 60 * 60)],
+        ['In one day', new Date(time + 1000 * 60 * 60 * 24)],
+        ['In two days', new Date(time + 1000 * 60 * 60 * 24 * 2)],
     ];
 
     examples.forEach(([label, date]) => {
