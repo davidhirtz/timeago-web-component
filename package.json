@@ -4,6 +4,14 @@
   "description": "Simple web component that displays dates as relative timestamps (e.g. \"4 minutes ago\").",
   "type": "module",
   "main": "dist/timeago.js",
+  "keywords": [
+    "web-component",
+    "timeago",
+    "date",
+    "timestamp",
+    "relative-time"
+  ],
+  "author": "David Hirtz",
   "scripts": {
     "build": "esbuild src/index.ts --bundle --outfile=dist/timeago.js && esbuild dist/timeago.js --minify --outfile=dist/timeago.min.js && cp dist/timeago.min.js docs/timeago.min.js"
   },

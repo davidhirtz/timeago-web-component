@@ -1,10 +1,10 @@
-x-timeago
+Timeago Web Component
 =========
 
 Tiny web component that displays dates as relative timestamps (e.g. "4 minutes ago"). Automatically synchronizes the
 elapsed time, supports the browser's language and sets the `title` attribute to the localized full date.
 
-No dependencies, 2.7kb.
+No dependencies, 2.8kb.
 
 ### Installation
 
