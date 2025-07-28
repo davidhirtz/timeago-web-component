@@ -1,4 +1,4 @@
-.gitattributes
 .github
+.idea
 docs
 tsconfig.json
